@@ -1,0 +1,70 @@
+.resizer {
+  position: relative;
+  & * {
+    box-sizing: border-box;
+  }
+  &--handle {
+    position: absolute;
+    z-index: 1000;
+    &--right {
+      right: -8px;
+      bottom: 0;
+      top: 0;
+      width: 16px;
+      cursor: ew-resize;
+    }
+    &--left {
+      left: -8px;
+      bottom: 0;
+      top: 0;
+      width: 16px;
+      cursor: ew-resize;
+    }
+    &--bottom {
+      bottom: -8px;
+      left: 0;
+      right: 0;
+      height: 16px;
+      cursor: ns-resize;
+    }
+    &--top {
+      top: -8px;
+      left: 0;
+      right: 0;
+      height: 16px;
+      cursor: ns-resize;
+    }
+    &--bottomRight {
+      bottom: -8px;
+      right: -8px;
+      height: 16px;
+      width: 16px;
+      cursor: se-resize;
+      z-index: 1001;
+    }
+    &--bottomLeft {
+      bottom: -8px;
+      left: -8px;
+      height: 16px;
+      width: 16px;
+      cursor: sw-resize;
+      z-index: 1001;
+    }
+    &--topRight {
+      top: -8px;
+      right: -8px;
+      height: 16px;
+      width: 16px;
+      cursor: ne-resize;
+      z-index: 1001;
+    }
+    &--topLeft {
+      top: -8px;
+      left: -8px;
+      height: 16px;
+      width: 16px;
+      cursor: nw-resize;
+      z-index: 1001;
+    }
+  }
+}

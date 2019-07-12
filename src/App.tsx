@@ -1,26 +1,31 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { Resizer } from "./lib/Resizer";
+import Avocode from "images/avocode.png";
 
-const App: React.FC = () => {
+export const App: React.FC = () => {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+      <div style={{ maxWidth: 1200, margin: "auto" }}>
+        <Resizer
+          minWidth={100}
+          minHeight={100}
+          handleStyle={{ bottom: { display: "flex" } }}
+          handleContent={{
+            bottom: <div style={{ backgroundColor: "red", width: "100%", height: 5, margin: "auto" }} />
+          }}
         >
-          Learn React
-        </a>
-      </header>
+          <div
+            style={{
+              backgroundImage: `url(${Avocode})`,
+              backgroundColor: "#c1f784",
+              backgroundSize: "contain",
+              backgroundRepeat: "no-repeat",
+              backgroundPosition: "center",
+              height: "100%"
+            }}
+          />
+        </Resizer>
+      </div>
     </div>
   );
-}
-
-export default App;
+};
