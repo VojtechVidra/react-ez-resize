@@ -36,19 +36,21 @@ interface HandleStyle {
 }
 
 interface HandleEnabled {
-  top?: React.CSSProperties;
-  topRight?: React.CSSProperties;
-  right?: React.CSSProperties;
-  bottomRight?: React.CSSProperties;
-  bottom?: React.CSSProperties;
-  bottomLeft?: React.CSSProperties;
-  left?: React.CSSProperties;
-  topleft?: React.CSSProperties;
+  top?: boolean;
+  topRight?: boolean;
+  right?: boolean;
+  bottomRight?: boolean;
+  bottom?: boolean;
+  bottomLeft?: boolean;
+  left?: boolean;
+  topleft?: boolean;
 }
 
 export interface ResizerProps {
   defaultWidth: number;
   defaultHeight: number;
+  width?: string | number;
+  height?: string | number;
   minWidth?: number;
   minHeight?: number;
   className?: string;
@@ -56,6 +58,13 @@ export interface ResizerProps {
   handleContent?: HandleContent;
   handleClassName?: HandleClassName;
   handleStyle?: HandleStyle;
+  handleEnabled?: HandleEnabled;
+  onStartResize?: (
+    e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>,
+    direction: ResizerDirection
+  ) => void;
+  onResize?: (e: MouseEvent | TouchEvent) => void;
+  onStopResize?: () => void;
 }
 
 interface State {
@@ -70,7 +79,10 @@ interface State {
 }
 
 export class Resizer extends React.Component<ResizerProps, State> {
-  static defaultProps = { defaultWidth: 100, defaultHeight: 100 };
+  static defaultProps = {
+    defaultWidth: 100,
+    defaultHeight: 100
+  };
   state = {
     isResizing: false,
     width: this.props.defaultWidth,
@@ -123,6 +135,7 @@ export class Resizer extends React.Component<ResizerProps, State> {
   resize = (e: MouseEvent | TouchEvent) => {
     if (this.state.isResizing && this.state.direction !== null) {
       e.preventDefault();
+      this.props.onResize && this.props.onResize(e);
 
       const { direction } = this.state;
 
@@ -161,6 +174,8 @@ export class Resizer extends React.Component<ResizerProps, State> {
     e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>,
     direction: ResizerDirection
   ) => {
+    this.props.onStartResize && this.props.onStartResize(e, direction);
+
     const [clientX, clientY] = this.getClientCors(e.nativeEvent);
     this.setState(({ width, height }) => ({
       isResizing: true,
@@ -173,6 +188,8 @@ export class Resizer extends React.Component<ResizerProps, State> {
   };
 
   stopResizing = () => {
+    this.props.onStopResize && this.props.onStopResize();
+
     this.setState({ isResizing: false });
   };
 
@@ -193,28 +210,41 @@ export class Resizer extends React.Component<ResizerProps, State> {
   }
 
   render() {
-    const { width, height } = this.state;
-    const { children, className, style } = this.props;
+    const { width: stateWidth, height: stateHeight } = this.state;
+    const { children, className, style, width, height } = this.props;
 
     return (
-      <div ref={this.resizerEl} style={{ ...style, width, height }} className={[styles.resizer, className].join(" ")}>
+      <div
+        ref={this.resizerEl}
+        data-testid="resizer"
+        style={{
+          ...style,
+          width: width || stateWidth,
+          height: height || stateHeight
+        }}
+        className={[styles.resizer, className].join(" ")}
+      >
         {children}
-        {Object.keys(ResizerHandleTypes).map(key => (
-          <ResizerHandle
-            key={key}
-            className={[
-              ResizerHandleTypes[key].className,
-              // @ts-ignore
-              this.props.handleClassName && this.props.handleClassName[key]
-            ].join(" ")}
-            onResizeStart={this.startResizing}
-            direction={ResizerHandleTypes[key].direction}
-            // @ts-ignore
-            children={this.props.handleContent && this.props.handleContent[key]}
-            // @ts-ignore
-            style={this.props.handleStyle && this.props.handleStyle[key]}
-          />
-        ))}
+
+        {Object.keys(ResizerHandleTypes).map(key => {
+          if (this.props.handleEnabled && this.props.handleEnabled[key as keyof HandleEnabled]) {
+            return (
+              <ResizerHandle
+                data-testid={`handle-${key}`}
+                key={key}
+                className={[
+                  ResizerHandleTypes[key].className,
+                  this.props.handleClassName && this.props.handleClassName[key as keyof HandleClassName]
+                ].join(" ")}
+                onResizeStart={this.startResizing}
+                direction={ResizerHandleTypes[key].direction}
+                children={this.props.handleContent && this.props.handleContent[key as keyof HandleContent]}
+                style={this.props.handleStyle && this.props.handleStyle[key as keyof HandleStyle]}
+              />
+            );
+          }
+          return null;
+        })}
       </div>
     );
   }

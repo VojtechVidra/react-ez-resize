@@ -8,7 +8,8 @@ export interface ResizerHandleProps {
     dir: ResizerDirection
   ) => void;
   direction: ResizerDirection;
-  style: React.CSSProperties;
+  style?: React.CSSProperties;
+  ["data-testid"]?: string;
 }
 
 export const ResizerHandle: React.FC<ResizerHandleProps> = ({
@@ -16,13 +17,15 @@ export const ResizerHandle: React.FC<ResizerHandleProps> = ({
   className,
   direction,
   children,
-  style
+  style,
+  ...props
 }) => (
   <div
     className={className}
     onMouseDown={e => onResizeStart(e, direction)}
     onTouchStart={e => onResizeStart(e, direction)}
     style={style}
+    data-testid={props["data-testid"]}
   >
     {children}
   </div>
