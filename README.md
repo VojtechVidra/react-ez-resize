@@ -2,10 +2,6 @@
 
 [![Build Status](https://travis-ci.org/VojtechVidra/react-ez-resize.svg?branch=master)](https://travis-ci.org/VojtechVidra/react-ez-resize)
 
-## Demo 
-
-[https://avocode-react-resizer-demo.web.app](https://avocode-react-resizer-demo.web.app)
-
 ## Props
 
 `defaultWidth: number;`
